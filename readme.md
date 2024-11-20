@@ -1,4 +1,4 @@
-#Alura Challenge, Exchange Rate#
+# Alura Challenge, Exchange Rate #
 
 **This is the project than allow to do the conversion between different currency, this project is based on the API called [ExchangeRateApi](https://www.exchangerate-api.com) that allow to convert an amount in equivalence in the other currencies.**
 
