@@ -2,7 +2,7 @@ package com.alura.conversor.services;
 
 import com.alura.conversor.exceptions.ConversionServiceException;
 import com.alura.conversor.models.ConversionResult;
-import com.alura.conversor.dtos.ConversionResponseDTO;
+import com.alura.conversor.dto.ConversionResponseDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

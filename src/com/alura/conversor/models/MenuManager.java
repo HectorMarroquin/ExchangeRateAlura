@@ -15,7 +15,10 @@ public class MenuManager {
         options.put(key, option);
     }
 
-    public ConversionOption getOption( String key){
+    public ConversionOption getOption(String key) {
+        if (!options.containsKey(key)) {
+            throw new IllegalArgumentException("Opción no válida: " + key);
+        }
         return options.get(key);
     }
 

@@ -1,6 +1,7 @@
 package com.alura.conversor.main;
 
 import com.alura.conversor.exceptions.ConversionServiceException;
+import com.alura.conversor.factory.MenuFactory;
 import com.alura.conversor.models.ConversionOption;
 import com.alura.conversor.models.ConversionResult;
 import com.alura.conversor.models.Currency;
@@ -12,27 +13,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
 
-        MenuManager menuManager = new MenuManager();
-
-        Currency dolar     = new Currency("Dolar","USD");
-        Currency argentino = new Currency("Peso Argentino","ARSS");
-        Currency brasil    = new Currency("Peso Brasileño","BRL");
-        Currency colombia  = new Currency("Peso Colombiano","COP");
-
-        ConversionOption first  = new ConversionOption(dolar,argentino);
-        ConversionOption second = new ConversionOption(argentino,dolar);
-        ConversionOption third  = new ConversionOption(dolar,brasil);
-        ConversionOption fourth = new ConversionOption(brasil,dolar);
-        ConversionOption fifth  = new ConversionOption(dolar,colombia);
-        ConversionOption sixth  = new ConversionOption(colombia,dolar);
-
-        menuManager.addOption("1", first );
-        menuManager.addOption("2", second );
-        menuManager.addOption("3", third );
-        menuManager.addOption("4", fourth  );
-        menuManager.addOption("5", fifth );
-        menuManager.addOption("6", sixth );
-        menuManager.addOption("6", sixth );
+        MenuManager menuManager = MenuFactory.createMenuManager();
 
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
@@ -48,6 +29,12 @@ public class Main {
                 running = false;
             } else {
                 System.out.println("Ingrese la cantidad: ");
+
+                if (!scanner.hasNextDouble()) {
+                    System.out.println("Por favor, ingrese un número válido.");
+                    scanner.nextLine(); // Consumir la entrada no válida
+                    continue; // Regresar al inicio del bucle
+                }
                 try {
                     // Leer la cantidad como double
                     double amount = scanner.nextDouble();
@@ -55,10 +42,6 @@ public class Main {
 
                     // Validar opción seleccionada
                     ConversionOption selectedOption = menuManager.getOption(choice);
-                    if (selectedOption == null) {
-                        System.out.println("Opción no válida. Por favor, seleccione una opción del menú.");
-                        continue; // Volver al inicio del bucle
-                    }
 
                     String codeOrigin = "[" + selectedOption.getFromCurrency().getCode() + "]";
                     String codeFinal = "[" + selectedOption.getToCurrency().getCode() + "]";
@@ -72,6 +55,9 @@ public class Main {
                     System.out.printf("El valor %.2f %s corresponde a %.2f %s.%n",
                             amount, codeOrigin, conversionResult.getAmountConverted(), codeFinal);
 
+                } catch (IllegalArgumentException e) {
+                    System.out.println(e.getMessage());
+                    continue; // Volver al menú
                 } catch (ConversionServiceException e) {
                     System.out.println("Error al realizar la conversión: " + e.getMessage());
                     System.out.println("Por favor intente más tarde.");
