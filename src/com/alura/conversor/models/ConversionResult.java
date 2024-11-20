@@ -12,29 +12,16 @@ public class ConversionResult {
         this.amountConverted = amountConverted;
     }
 
-    // Getters y Setters
     public double getOriginalAmount() {
         return originalAmount;
-    }
-
-    public void setOriginalAmount(double originalAmount) {
-        this.originalAmount = originalAmount;
     }
 
     public double getRate() {
         return rate;
     }
 
-    public void setRate(double rate) {
-        this.rate = rate;
-    }
-
     public double getAmountConverted() {
         return amountConverted;
-    }
-
-    public void setAmountConverted(double amountConverted) {
-        this.amountConverted = amountConverted;
     }
 
     @Override

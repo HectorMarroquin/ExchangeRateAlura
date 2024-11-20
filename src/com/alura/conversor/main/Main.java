@@ -1,5 +1,6 @@
 package com.alura.conversor.main;
 
+import com.alura.conversor.exceptions.ConversionServiceException;
 import com.alura.conversor.models.ConversionOption;
 import com.alura.conversor.models.ConversionResult;
 import com.alura.conversor.models.Currency;
@@ -14,7 +15,7 @@ public class Main {
         MenuManager menuManager = new MenuManager();
 
         Currency dolar     = new Currency("Dolar","USD");
-        Currency argentino = new Currency("Peso Argentino","ARS");
+        Currency argentino = new Currency("Peso Argentino","ARSS");
         Currency brasil    = new Currency("Peso Brasileño","BRL");
         Currency colombia  = new Currency("Peso Colombiano","COP");
 
@@ -31,6 +32,7 @@ public class Main {
         menuManager.addOption("4", fourth  );
         menuManager.addOption("5", fifth );
         menuManager.addOption("6", sixth );
+        menuManager.addOption("6", sixth );
 
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
@@ -46,28 +48,39 @@ public class Main {
                 running = false;
             } else {
                 System.out.println("Ingrese la cantidad: ");
+                try {
+                    // Leer la cantidad como double
+                    double amount = scanner.nextDouble();
+                    scanner.nextLine(); // Consumir el carácter de nueva línea sobrante
 
-                // Leer la cantidad como double
-                double amount = scanner.nextDouble();
-                scanner.nextLine(); // Consumir el carácter de nueva línea sobrante
+                    // Validar opción seleccionada
+                    ConversionOption selectedOption = menuManager.getOption(choice);
+                    if (selectedOption == null) {
+                        System.out.println("Opción no válida. Por favor, seleccione una opción del menú.");
+                        continue; // Volver al inicio del bucle
+                    }
 
-                // Obtener la opción seleccionada
-                ConversionOption selectedOption = menuManager.getOption(choice);
-                String codeOrigin = "[" + selectedOption.getFromCurrency().getCode() + "]"; // Agregar corchetes
-                String codeFinal = "[" + selectedOption.getToCurrency().getCode() + "]"; // Agregar corchetes
+                    String codeOrigin = "[" + selectedOption.getFromCurrency().getCode() + "]";
+                    String codeFinal = "[" + selectedOption.getToCurrency().getCode() + "]";
 
-                // Realizar la conversión
-                ConversionResult result = currencyConversionService.getExchangeRate(
-                        selectedOption.getFromCurrency().getCode(),
-                        selectedOption.getToCurrency().getCode(),
-                        amount
-                );
+                    // Realizar la conversión
+                    ConversionResult conversionResult = currencyConversionService.getExchangeRate(
+                            selectedOption.getFromCurrency().getCode(),
+                            selectedOption.getToCurrency().getCode(),
+                            amount
+                    );
+                    System.out.printf("El valor %.2f %s corresponde a %.2f %s.%n",
+                            amount, codeOrigin, conversionResult.getAmountConverted(), codeFinal);
 
-                // Mostrar el resultado
-                System.out.printf("El valor %.2f %s corresponde a %.2f %s.%n",
-                        amount, codeOrigin, result.getAmountConverted(), codeFinal);
+                } catch (ConversionServiceException e) {
+                    System.out.println("Error al realizar la conversión: " + e.getMessage());
+                    System.out.println("Por favor intente más tarde.");
+                } catch (Exception e) {
+                    System.out.println("Error inesperado: " + e.getMessage());
+                }
             }
         }
+
 
     }
 }

@@ -1,7 +1,8 @@
 package com.alura.conversor.services;
 
+import com.alura.conversor.exceptions.ConversionServiceException;
 import com.alura.conversor.models.ConversionResult;
-import com.alura.conversor.models.ConversionResultDTO;
+import com.alura.conversor.dtos.ConversionResponseDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -31,20 +32,14 @@ public class CurrencyConversionService {
         String url = buildExchangeURL(fromCode,toCode,amount);
 
       try{
-
           String jsonResponse = sendGetRequest(url);
-          ConversionResultDTO exchangeRateResponse = gson.fromJson(jsonResponse, ConversionResultDTO.class);
-
+          ConversionResponseDTO exchangeRateResponse = gson.fromJson(jsonResponse, ConversionResponseDTO.class);
           // Incluye el monto original al crear el resultado final
           return new ConversionResult(amount, exchangeRateResponse.conversion_rate(), exchangeRateResponse.conversion_result());
 
-
-      } catch (IOException | InterruptedException e) {
-
-          System.err.println("No se pudo obtener la tasa de cambio, intente nuevamente más tarde. " + e.getMessage());
-          return null; // o podrías lanzar una excepción personalizada
+      } catch ( IOException | InterruptedException e ) {
+          throw new ConversionServiceException("Error al obtener la tasa de cambio entre " + fromCode + " y " + toCode, e);
       }
-
     }
 
     private String buildExchangeURL(String fromCode, String toCode, double amount){
